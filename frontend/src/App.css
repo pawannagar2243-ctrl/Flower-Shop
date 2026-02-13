@@ -1,0 +1,55 @@
+/* IMAGE STYLE */
+.product-img {
+  height: 320px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* CART ICON DEFAULT (HIDDEN) */
+.cart-icon {
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* ICON SIZE */
+.cart-icon i {
+  font-size: 18px;
+}
+
+/* SHOW ICON ON HOVER */
+.product-card:hover .cart-icon {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+.custom-link-css {
+  position: relative;
+  display: inline-block;
+  width: fit-content ;
+}
+
+.custom-link-css::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  bottom: 10px;
+  width: 0%;
+  height: 2px;
+  background-color: black;
+  transition: width 0.3s ease;
+}
+
+.custom-link-css:hover::after {
+  width: 80%;
+}
