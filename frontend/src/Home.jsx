@@ -30,7 +30,7 @@ function Home() {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get("https://Flower-Shop-1-wwe3.onrender.com/productForm");
+      const res = await axios.get(`${API}/productForm`);
       setDatafetch(res.data);
     } catch (err) {
       console.log(err);
@@ -213,7 +213,8 @@ function Home() {
 
 
               <Link to= {`/product/${item._id}`} className="nav-link"><img
-                src={`http://localhost:5000/uploads/${item.Image}`}
+               src={`${API}/uploads/${item.Image}`}
+
                   className="card-img-top"
                   alt={item.Name}
                 style={{ height: "380px", objectFit: "cover", borderRadius: "12px" }}
