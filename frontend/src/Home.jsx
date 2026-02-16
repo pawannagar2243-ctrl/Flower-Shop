@@ -4,6 +4,7 @@ import { Routes, Route,Link } from "react-router-dom";
 import ProductDetails from './ProductDetails';
 import axios from "axios";
 function Home() {
+	 const API = import.meta.env.VITE_API_URL;
 	 const data = [
     {
       num: "01",
