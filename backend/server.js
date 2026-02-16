@@ -8,7 +8,11 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "https://flower-shop-1-5yi3.onrender.com",
+  methods: ["GET", "POST"],
+}));
+
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
