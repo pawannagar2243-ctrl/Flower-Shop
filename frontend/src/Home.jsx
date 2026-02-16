@@ -4,7 +4,6 @@ import { Routes, Route,Link } from "react-router-dom";
 import ProductDetails from './ProductDetails';
 import axios from "axios";
 function Home() {
-	 const API = import.meta.env.VITE_API_URL;
 	 const data = [
     {
       num: "01",
@@ -31,7 +30,7 @@ function Home() {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(`${API}/productForm`);
+      const res = await axios.get("http://localhost:5000/productForm");
       setDatafetch(res.data);
     } catch (err) {
       console.log(err);
@@ -214,8 +213,7 @@ function Home() {
 
 
               <Link to= {`/product/${item._id}`} className="nav-link"><img
-               src={`${API}/uploads/${item.Image}`}
-
+                src={`http://localhost:5000/uploads/${item.Image}`}
                   className="card-img-top"
                   alt={item.Name}
                 style={{ height: "380px", objectFit: "cover", borderRadius: "12px" }}
