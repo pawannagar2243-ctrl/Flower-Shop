@@ -5,7 +5,8 @@ const multer = require("multer");
 const path = require("path");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-require('dotenv').config();
+require("dotenv").config();
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -13,9 +14,11 @@ app.use("/uploads", express.static("uploads"));
 
 /* ================= MONGODB CONNECT ================= */
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log("Mongo Error:", err));
+
 /* ================= MULTER ================= */
 
 const storage = multer.diskStorage({
@@ -58,7 +61,6 @@ app.post("/productForm", upload.single("Image"), async (req, res) => {
 app.get("/productForm", async (req, res) => {
   res.json(await Product.find());
 });
-
 app.get("/productForm/:id", async (req, res) => {
   res.json(await Product.findById(req.params.id));
 });
@@ -75,7 +77,6 @@ app.delete("/productForm/:id", async (req, res) => {
   await Product.findByIdAndDelete(req.params.id);
   res.json({ message: "Product Deleted" });
 });
-
 /* ================= CATEGORY ================= */
 
 const categorySchema = new mongoose.Schema({
@@ -94,22 +95,7 @@ app.get("/categories", async (req, res) => {
   res.json(await Category.find());
 });
 
-app.put("/categories/:id", async (req, res) => {
-  res.json(
-    await Category.findByIdAndUpdate(
-      req.params.id,
-      { name: req.body.name },
-      { new: true }
-    )
-  );
-});
-
-app.delete("/categories/:id", async (req, res) => {
-  await Category.findByIdAndDelete(req.params.id);
-  res.json({ message: "Category Deleted" });
-});
-
-/* ================= USER SIGNUP ================= */
+/* ================= USER ================= */
 
 const signupSchema = new mongoose.Schema({
   username: String,
@@ -169,52 +155,6 @@ app.put("/toggleUsers/:id", async (req, res) => {
   });
 });
 
-/* ================= JWT VERIFY ================= */
-
-const verifyToken = (req, res, next) => {
-  const header = req.headers["authorization"];
-
-  if (!header) return res.status(403).json({ message: "Token required" });
-
-  const token = header.split(" ")[1];
-
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch {
-    res.status(401).json({ message: "Invalid token" });
-  }
-};
-
-/* ================= LOGIN ================= */
-
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  const user = await Signup.findOne({ email });
-  if (!user) return res.status(401).json({ message: "User not found" });
-
-  if (!user.isActive) return res.status(403).json({ message: "User disabled" });
-
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(401).json({ message: "Wrong password" });
-
-  const token = jwt.sign(
-    { id: user._id, email: user.email },
-    JWT_SECRET,
-    { expiresIn: "1d" }
-  );
-
-  res.json({ token, user });
-});
-
-/* ================= PROFILE ================= */
-
-app.get("/profile", verifyToken, async (req, res) => {
-  const user = await Signup.findById(req.user.id).select("-password");
-  res.json(user);
-});
 
 /* ================= ORDERS ================= */
 
@@ -224,9 +164,21 @@ const orderSchema = new mongoose.Schema(
     phone: String,
     address: String,
     city: String,
-    Image: String,
     pincode: String,
-    products: Array,
+
+    products: [
+      {
+        Name: String,
+        Price: Number,
+        qty: Number,
+        Image: String,
+        returnStatus: {
+          type: String,
+          default: null,
+        },
+      },
+    ],
+
     total: Number,
     paymentMethod: String,
     paymentStatus: String,
@@ -248,7 +200,9 @@ app.get("/admin/orders", async (req, res) => {
 });
 
 app.put("/admin/order-status/:id", async (req, res) => {
-  await Order.findByIdAndUpdate(req.params.id, { status: req.body.status });
+  await Order.findByIdAndUpdate(req.params.id, {
+    status: req.body.status,
+  });
   res.json({ success: true });
 });
 
@@ -257,8 +211,92 @@ app.delete("/admin/order/:id", async (req, res) => {
   res.json({ success: true });
 });
 
+app.put("/cancel-order/:id", async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order)
+      return res.status(404).json({ message: "Order not found" });
+
+    if (order.status === "Delivered") {
+      return res.status(400).json({
+        message: "Delivered order cannot be cancelled",
+      });
+    }
+
+    order.status = "Cancelled";
+    await order.save();
+
+    res.json({ message: "Order cancelled successfully" });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+/* ================= RETURN SYSTEM (FIXED) ================= */
+
+/* User Return Request */
+app.post("/return-product", async (req, res) => {
+  const { orderId, productId } = req.body;
+
+  try {
+    const order = await Order.findById(orderId);
+
+    if (!order)
+      return res.status(404).json({ message: "Order not found" });
+
+    const product = order.products.find(
+      (p) => p._id.toString() === productId
+    );
+
+    if (!product)
+      return res.status(404).json({ message: "Product not found" });
+
+    product.returnStatus = "Requested";
+
+    await order.save();
+
+    res.json({ message: "Return requested successfully" });
+  } catch (error) {
+    console.error("Return Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/* Admin Approve / Reject */
+app.put("/admin/return-action", async (req, res) => {
+  const { orderId, productId, action } = req.body;
+
+  try {
+    const order = await Order.findById(orderId);
+
+    if (!order)
+      return res.status(404).json({ message: "Order not found" });
+
+    const product = order.products.find(
+      (p) => p._id.toString() === productId
+    );
+
+    if (!product)
+      return res.status(404).json({ message: "Product not found" });
+
+    product.returnStatus = action;
+
+    await order.save();
+
+    res.json({ message: "Return updated successfully" });
+  } catch (error) {
+    console.error("Admin Return Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 /* ================= SERVER ================= */
 
-app.listen(5000, () => {
-  console.log("Server running on http://localhost:5000");
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on ${PORT}`);
 });

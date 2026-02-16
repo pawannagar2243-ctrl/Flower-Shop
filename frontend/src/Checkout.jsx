@@ -39,7 +39,7 @@ function Checkout() {
 
     if (!form.phone.trim()) {
       validation.phone = "Phone is required";
-    } else if (!/^[6-9]\d{9}$/.test(form.phone)) {
+    } else if (!/^[6-9]\d{10}$/.test(form.phone)) {
       validation.phone = "Enter valid 10 digit phone number";
     }
 
