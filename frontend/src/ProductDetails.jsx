@@ -63,7 +63,7 @@ function ProductDetails() {
               Sale!
             </span>
             <img
-              src={`https://flower-shop-3b6m.onrender.com/uploads/${item.Image}`}
+              src={`https://flower-shop-3b6m.onrender.com/uploads/${product.Image}`}
               className="w-100"
               alt={product.Name}
             />
