@@ -65,15 +65,15 @@ function Login() {
                 required
               />
 
-              <input
-                type="password"
-                name="password"
-                className="form-control mb-3"
-                placeholder="Password"
-                value={data.password}
-                onChange={handelChange}
-                required
-              />
+             <input 
+				  className="form-control mb-3"
+				  placeholder="Password"
+				  required
+				  type="password"
+				  name="password"
+				  autoComplete="current-password"
+				/>
+
 
               <div className="d-flex justify-content-between mb-3">
                 <div className="form-check">
