@@ -23,7 +23,7 @@ function Login() {
   e.preventDefault();
 
   try {
-    const res = await axios.post("http://localhost:5000/login", {
+    const res = await axios.post("https://flower-shop-3b6m.onrender.com/login", {
       email: data.email,
       password: data.password,
     });
