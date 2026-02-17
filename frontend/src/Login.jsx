@@ -55,24 +55,30 @@ function Login() {
             <form onSubmit={handelSubmit}>
               <h4 className="text-center mb-4">Login</h4>
 
-              <input 
+             <input 
 				  className="form-control mb-3"
 				  placeholder="Email"
 				  required
 				  type="email"
 				  name="email"
+				  value={data.email}
+				  onChange={handelChange}
 				  autoComplete="username"
 				/>
 
 
-             <input 
+
+            <input 
 				  className="form-control mb-3"
 				  placeholder="Password"
 				  required
 				  type="password"
 				  name="password"
+				  value={data.password}
+				  onChange={handelChange}
 				  autoComplete="current-password"
 				/>
+
 
 
               <div className="d-flex justify-content-between mb-3">
