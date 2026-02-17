@@ -63,7 +63,7 @@ function ProductDetails() {
               Sale!
             </span>
             <img
-              src={`http://localhost:5000/uploads/${product.Image}`}
+              src={`https://flower-shop-3b6m.onrender.com/uploads/${item.Image}`}
               className="w-100"
               alt={product.Name}
             />
@@ -217,7 +217,7 @@ function ProductDetails() {
                    
                   }}><i className="bi bi-cart3" onClick={() => handleAddToCart(item)}></i></span>
                <Link to={`/product/${item._id}`}className="nav-link p-0">
-                  <img src={`http://localhost:5000/uploads/${item.Image}`}
+                  <img src={`https://flower-shop-3b6m.onrender.com/uploads/${item.Image}`}
                    className="card-img-top"alt={item.Name}style={{height: "320px",objectFit: "cover",borderRadius: "12px",}}/></Link>
               <div className="text-center py-2">
                 <p className="my-0 text-muted">{item.Category}</p>
