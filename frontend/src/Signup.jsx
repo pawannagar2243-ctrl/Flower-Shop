@@ -31,7 +31,7 @@ function Signup() {
     formData.append("password", data.password);
     formData.append("image", image);
 
-    await axios.post("http://localhost:5000/signup",
+    await axios.post("https://flower-shop-3b6m.onrender.com//signup",
       formData, 
       {
         headers: {
