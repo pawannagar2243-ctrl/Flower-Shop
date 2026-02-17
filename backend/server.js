@@ -302,6 +302,28 @@ app.put("/admin/return-action", async (req, res) => {
   }
 });
 
+const Contact = mongoose.model("Contact", ContactSchema);
+
+app.post("/Contact", async (req, res) => {
+  try {
+    const data = await Contact.create(req.body);
+	const user = await Contact.create({
+      name: req.body.name,
+      last: req.body.last,
+      email: req.body.email,
+      message: req.body.message
+    });
+    res.status(201).json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/Contact", (req, res) => {
+  res.send("Server running");
+});
+
+
 /* ================= SERVER ================= */
 
 const PORT = process.env.PORT || 5000;
