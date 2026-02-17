@@ -12,14 +12,14 @@ function ProductDetails() {
   const [rating, setRating] = useState(0);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/productForm/${id}`)
+    axios.get(`https://flower-shop-3b6m.onrender.com/productForm/${id}`)
       .then((res) => setProduct(res.data))
       .catch((err) => console.log(err));
   }, [id]);
   
   const fetchData = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/productForm");
+      const res = await axios.get("https://flower-shop-3b6m.onrender.com/productForm");
       setDatafetch(res.data);
     } catch (err) {
       console.log(err);
