@@ -164,6 +164,52 @@ app.put("/toggleUsers/:id", async (req, res) => {
   });
 });
 
+/* ================= JWT VERIFY ================= */
+
+const verifyToken = (req, res, next) => {
+  const header = req.headers["authorization"];
+
+  if (!header) return res.status(403).json({ message: "Token required" });
+
+  const token = header.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch {
+    res.status(401).json({ message: "Invalid token" });
+  }
+};
+
+/* ================= LOGIN ================= */
+
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await Signup.findOne({ email });
+  if (!user) return res.status(401).json({ message: "User not found" });
+
+  if (!user.isActive) return res.status(403).json({ message: "User disabled" });
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) return res.status(401).json({ message: "Wrong password" });
+
+  const token = jwt.sign(
+    { id: user._id, email: user.email },
+    JWT_SECRET,
+    { expiresIn: "1d" }
+  );
+
+  res.json({ token, user });
+});
+
+/* ================= PROFILE ================= */
+
+app.get("/profile", verifyToken, async (req, res) => {
+  const user = await Signup.findById(req.user.id).select("-password");
+  res.json(user);
+});
 
 /* ================= ORDERS ================= */
 
