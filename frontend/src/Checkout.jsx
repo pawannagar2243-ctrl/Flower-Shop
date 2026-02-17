@@ -65,7 +65,7 @@ function Checkout() {
     if (!validateForm()) return;
 
     try {
-      const res = await axios.post("http://localhost:5000/place-order", {
+      const res = await axios.post("https://flower-shop-3b6m.onrender.com/place-order", {
         ...form,
         products: cart,
         total,
