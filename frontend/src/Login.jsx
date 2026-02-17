@@ -55,15 +55,15 @@ function Login() {
             <form onSubmit={handelSubmit}>
               <h4 className="text-center mb-4">Login</h4>
 
-              <input
-                type="email"
-                name="email"
-                className="form-control mb-3"
-                placeholder="Email"
-                value={data.email}
-                onChange={handelChange}
-                required
-              />
+              <input 
+				  className="form-control mb-3"
+				  placeholder="Email"
+				  required
+				  type="email"
+				  name="email"
+				  autoComplete="username"
+				/>
+
 
              <input 
 				  className="form-control mb-3"
