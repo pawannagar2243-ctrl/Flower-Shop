@@ -10,7 +10,7 @@ const OrderSuccess = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/admin/orders");
+      const res = await axios.get("https://flower-shop-3b6m.onrender.com/admin/orders");
       setOrders(Array.isArray(res.data) ? res.data : []);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -24,7 +24,7 @@ const OrderSuccess = () => {
 
     try {
       await axios.put(
-        `http://localhost:5000/cancel-order/${orderId}`
+        `https://flower-shop-3b6m.onrender.com/cancel-order/${orderId}`
       );
       alert("Order Cancelled Successfully");
       fetchOrders();
@@ -36,7 +36,7 @@ const OrderSuccess = () => {
   // ✅ Return Product
   const handleReturn = async (orderId, productId) => {
     try {
-      await axios.post("http://localhost:5000/return-product", {
+      await axios.post("https://flower-shop-3b6m.onrender.com/return-product", {
         orderId,
         productId,
       });
