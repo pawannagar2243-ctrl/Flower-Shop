@@ -220,7 +220,7 @@ function ShoppingCart() {
             >
             {user ? (
 				<img
-				  src={`https://flower-shop-3b6m.onrender.com/uploads/${user.image}`}
+				  src={`https://flower-shop-3b6m.onrender.com/uploads/${user.Image}`}
 				  alt="profile"
 				  className="rounded-circle"
 				  style={{
