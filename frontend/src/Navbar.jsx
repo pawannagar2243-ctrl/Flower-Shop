@@ -258,12 +258,12 @@ function ShoppingCart() {
         <div className="offcanvas-body text-center">
           {user && (
             <>
-              <img
-                src={https://flower-shop-3b6m.onrender.com/uploads/${user.image}`}
-                alt="user"
-                className="rounded-circle mb-3"
-                style={{ width: "120px", height: "120px", objectFit: "cover" }}
-              />
+            <img
+				  src={`https://flower-shop-3b6m.onrender.com/uploads/${user.image}`}
+				  alt="user"
+				  className="rounded-circle mb-3"
+				  style={{ width: "120px", height: "120px", objectFit: "cover" }}
+                 />
 
               <h5>{user.username}</h5>
               <p className="text-muted">{user.email}</p>
