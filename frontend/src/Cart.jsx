@@ -66,7 +66,7 @@ function Cart() {
                     </button>
 
                     <img
-                      src={`http://localhost:5000/uploads/${item.Image}`}
+                      src={`https://flower-shop-3b6m.onrender.com/uploads/${item.Image}`}
                       width="70"
                       height="70"
                       style={{ objectFit: "cover" }}
