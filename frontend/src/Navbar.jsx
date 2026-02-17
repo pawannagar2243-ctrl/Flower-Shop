@@ -218,7 +218,7 @@ function ShoppingCart() {
               className="btn p-0 border-0 bg-transparent"
               onClick={handleUserClick}
             >
-            {user ? (
+            {user && (
 				<img
 				  src={`https://flower-shop-3b6m.onrender.com/uploads/${user.Image}`}
 				  alt="profile"
