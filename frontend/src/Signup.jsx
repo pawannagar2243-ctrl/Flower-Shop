@@ -70,6 +70,7 @@ function Signup() {
             placeholder="Email"
             value={data.email}
             onChange={handelChange}
+			autoComplete="username"
             required
           />
 		  
