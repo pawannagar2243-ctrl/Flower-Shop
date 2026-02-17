@@ -301,6 +301,11 @@ app.put("/admin/return-action", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+const ContactSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  message: String,
+}, { timestamps: true });
 
 const Contact = mongoose.model("Contact", ContactSchema);
 
