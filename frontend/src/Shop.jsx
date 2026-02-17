@@ -7,7 +7,7 @@ function Shop() {
   const [datafetch, setDatafetch] = useState([]);
   const fetchData = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/productForm");
+      const res = await axios.get("https://flower-shop-3b6m.onrender.com/productForm");
       setDatafetch(res.data);
     } catch (err) {
       console.log(err);
