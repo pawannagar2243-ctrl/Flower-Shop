@@ -86,7 +86,7 @@ const OrderSuccess = () => {
               <div key={index} className="mb-3 pb-2">
                 <div className="d-flex align-items-center">
                   <img
-                    src={`http://localhost:5000/uploads/${p.Image}`}
+                    src={`https://flower-shop-3b6m.onrender.com/uploads/${p.Image}`}
                     width="60"
                     height="60"
                     style={{ objectFit: "cover" }}
