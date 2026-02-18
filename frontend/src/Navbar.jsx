@@ -75,7 +75,7 @@ function ShoppingCart() {
         {cartItems.map((item) => (
           <div key={item._id} className="d-flex gap-2 mb-3">
             <img
-              src={`https://flower-shop-3b6m.onrender.com/uploads/${item.Image}`}
+              src={`http://localhost:5000/uploads/${item.Image}`}
               alt={item.Name}
               className="img-fluid rounded"
               style={{ maxWidth: "60px" }}
@@ -220,7 +220,7 @@ function ShoppingCart() {
             >
             {user ? (
 				<img
-				  src={`https://flower-shop-3b6m.onrender.com/uploads/${user.image}`}
+				  src={`http://localhost:5000/uploads/${user.image}`}
 				  alt="profile"
 				  className="rounded-circle"
 				  style={{
@@ -258,12 +258,12 @@ function ShoppingCart() {
         <div className="offcanvas-body text-center">
           {user && (
             <>
-            <img
-				  src={`https://flower-shop-3b6m.onrender.com/uploads/${user.image}`}
-				  alt="user"
-				  className="rounded-circle mb-3"
-				  style={{ width: "120px", height: "120px", objectFit: "cover" }}
-                 />
+              <img
+                src={`http://localhost:5000/uploads/${user.image}`}
+                alt="user"
+                className="rounded-circle mb-3"
+                style={{ width: "120px", height: "120px", objectFit: "cover" }}
+              />
 
               <h5>{user.username}</h5>
               <p className="text-muted">{user.email}</p>
