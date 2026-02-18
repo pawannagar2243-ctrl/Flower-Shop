@@ -13,7 +13,7 @@ const OrderSuccess = () => {
     const token = localStorage.getItem("token");
 
     const res = await axios.get(
-      "http://localhost:5000/my-orders",
+      "https://flower-shop-3b6m.onrender.com/my-orders",
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -33,7 +33,7 @@ const OrderSuccess = () => {
 
     try {
       await axios.put(
-        `http://localhost:5000/cancel-order/${orderId}`
+        `https://flower-shop-3b6m.onrender.com/cancel-order/${orderId}`
       );
 
       alert("Order Cancelled Successfully");
@@ -46,7 +46,7 @@ const OrderSuccess = () => {
   // ✅ Return Function
   const handleReturn = async (orderId, productId) => {
     try {
-      await axios.post("http://localhost:5000/return-product", {
+      await axios.post("https://flower-shop-3b6m.onrender.com/return-product", {
         orderId,
         productId,
       });
@@ -97,7 +97,7 @@ const OrderSuccess = () => {
               <div key={index} className="mb-3 border-bottom pb-2">
                 <div className="d-flex align-items-center">
                   <img
-                    src={`http://localhost:5000/uploads/${p.Image}`}
+                    src={`https://flower-shop-3b6m.onrender.com/uploads/${p.Image}`}
                     width="60"
                     height="60"
                     style={{ objectFit: "cover" }}
