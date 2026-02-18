@@ -198,7 +198,7 @@ function Checkout() {
                   <div key={index} className="d-flex justify-content-between align-items-center mb-3">
                     <div className="d-flex align-items-center">
                       <img
-                        src={`http://localhost:5000/uploads/${item.Image}`}
+                        src={`https://flower-shop-3b6m.onrender.com/uploads/${item.Image}`}
                         alt={item.Name}
                         width="50"
                         height="50"
