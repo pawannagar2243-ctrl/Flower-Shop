@@ -58,7 +58,6 @@ function Signup() {
             placeholder="Username"
             value={data.username}
             onChange={handelChange}
-			autoComplete="new-password"
             required
           />
 
@@ -69,6 +68,7 @@ function Signup() {
             placeholder="Email"
             value={data.email}
             onChange={handelChange}
+			autoComplete="username" 
             required
           />
 
