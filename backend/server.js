@@ -295,7 +295,10 @@ app.get("/my-orders/:userId", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
-
+app.get("/my-orders", verifyToken, async (req, res) => {
+  const orders = await Order.find({ userId: req.user.id });
+  res.json(orders);
+});
 
 app.put("/admin/order-status/:id", async (req, res) => {
   await Order.findByIdAndUpdate(req.params.id, { status: req.body.status });
