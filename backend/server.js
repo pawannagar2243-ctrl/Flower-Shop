@@ -70,6 +70,7 @@ app.post("/productForm", upload.single("Image"), async (req, res) => {
 app.get("/productForm", async (req, res) => {
   res.json(await Product.find());
 });
+
 app.get("/productForm/:id", async (req, res) => {
   res.json(await Product.findById(req.params.id));
 });
@@ -86,6 +87,7 @@ app.delete("/productForm/:id", async (req, res) => {
   await Product.findByIdAndDelete(req.params.id);
   res.json({ message: "Product Deleted" });
 });
+
 /* ================= CATEGORY ================= */
 
 const categorySchema = new mongoose.Schema({
@@ -104,7 +106,22 @@ app.get("/categories", async (req, res) => {
   res.json(await Category.find());
 });
 
-/* ================= USER ================= */
+app.put("/categories/:id", async (req, res) => {
+  res.json(
+    await Category.findByIdAndUpdate(
+      req.params.id,
+      { name: req.body.name },
+      { new: true }
+    )
+  );
+});
+
+app.delete("/categories/:id", async (req, res) => {
+  await Category.findByIdAndDelete(req.params.id);
+  res.json({ message: "Category Deleted" });
+});
+
+/* ================= USER SIGNUP ================= */
 
 const signupSchema = new mongoose.Schema({
   username: String,
@@ -201,7 +218,8 @@ app.post("/login", async (req, res) => {
     { expiresIn: "1d" }
   );
 
-  res.json({ token, user });
+  res.json({ token,  success: true,
+  user: user });
 });
 
 /* ================= PROFILE ================= */
@@ -215,6 +233,11 @@ app.get("/profile", verifyToken, async (req, res) => {
 
 const orderSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Signup",
+      required: true,
+    },
     name: String,
     phone: String,
     address: String,
@@ -223,10 +246,14 @@ const orderSchema = new mongoose.Schema(
 
     products: [
       {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+        },
         Name: String,
-        Price: Number,
         qty: Number,
-        Image: String,
+		Image: String,
+        Price: Number,
         returnStatus: {
           type: String,
           default: null,
@@ -242,22 +269,36 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
 const Order = mongoose.model("Order", orderSchema);
 
 app.post("/place-order", async (req, res) => {
-  const order = new Order(req.body);
-  await order.save();
-  res.json({ success: true });
+  try {
+    const order = new Order(req.body);
+    await order.save();
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
+
 
 app.get("/admin/orders", async (req, res) => {
   res.json(await Order.find().sort({ createdAt: -1 }));
 });
+app.get("/my-orders/:userId", async (req, res) => {
+  try {
+    const orders = await Order.find({ userId: req.params.userId });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 
 app.put("/admin/order-status/:id", async (req, res) => {
-  await Order.findByIdAndUpdate(req.params.id, {
-    status: req.body.status,
-  });
+  await Order.findByIdAndUpdate(req.params.id, { status: req.body.status });
   res.json({ success: true });
 });
 
@@ -265,7 +306,12 @@ app.delete("/admin/order/:id", async (req, res) => {
   await Order.findByIdAndDelete(req.params.id);
   res.json({ success: true });
 });
-
+const ContactSchema = new mongoose.Schema({
+  first: String,
+  last: String,
+  email: String,
+  message: String,
+});
 app.put("/cancel-order/:id", async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -347,11 +393,7 @@ app.put("/admin/return-action", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-const ContactSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  message: String,
-}, { timestamps: true });
+
 
 const Contact = mongoose.model("Contact", ContactSchema);
 
@@ -374,11 +416,8 @@ app.get("/Contact", (req, res) => {
   res.send("Server running");
 });
 
-
 /* ================= SERVER ================= */
 
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on ${PORT}`);
+app.listen(5000, () => {
+  console.log("Server running on http://localhost:5000");
 });
