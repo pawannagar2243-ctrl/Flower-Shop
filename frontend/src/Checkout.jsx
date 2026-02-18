@@ -31,7 +31,6 @@ function Checkout() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ================= VALIDATION =================
   const validateForm = () => {
     let validation = {};
 
@@ -39,7 +38,7 @@ function Checkout() {
 
     if (!form.phone.trim()) {
       validation.phone = "Phone is required";
-    } else if (!/^[6-9]\d{10}$/.test(form.phone)) {
+    } else if (!/^[6-9]\d{9}$/.test(form.phone)) {
       validation.phone = "Enter valid 10 digit phone number";
     }
 
@@ -65,8 +64,9 @@ function Checkout() {
     if (!validateForm()) return;
 
     try {
-      const res = await axios.post("https://flower-shop-3b6m.onrender.com/place-order", {
+      const res = await axios.post("http://localhost:5000/place-order", {
         ...form,
+		userId: localStorage.getItem("userId"),
         products: cart,
         total,
         paymentMethod,
@@ -99,7 +99,6 @@ function Checkout() {
     <div className="container my-5">
       <form onSubmit={placeOrder}>
         <div className="row">
-          {/* ================= BILLING ================= */}
           <div className="col-md-7">
             <h4>Billing Details</h4>
 
@@ -199,7 +198,7 @@ function Checkout() {
                   <div key={index} className="d-flex justify-content-between align-items-center mb-3">
                     <div className="d-flex align-items-center">
                       <img
-                        src={`https://flower-shop-3b6m.onrender.com/uploads/${item.Image}`}
+                        src={`http://localhost:5000/uploads/${item.Image}`}
                         alt={item.Name}
                         width="50"
                         height="50"
