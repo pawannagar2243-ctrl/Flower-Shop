@@ -150,9 +150,7 @@ const OrderSuccess = () => {
                   Cancel Order
                 </button>
               )}
-            <button className="btn btn-sm btn-warning me-2">
-              Edit
-            </button>
+            
           </div>
 
           <h5 className="text-end mt-2">
