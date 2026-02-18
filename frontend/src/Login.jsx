@@ -19,30 +19,31 @@ function Login() {
     });
   };
 
-  const handelSubmit = async (e) => {
+ const handelSubmit = async (e) => {
   e.preventDefault();
 
   try {
-    const res = await axios.post("https://flower-shop-3b6m.onrender.com/login", {
+    const res = await axios.post("http://localhost:5000/login", {
       email: data.email,
       password: data.password,
     });
 
     if (res.data.token) {
       alert("Login Success");
-	  
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("loginUser", JSON.stringify(res.data.user));
-	  
-	  navigate("/");
-	   window.location.reload();
+      localStorage.setItem("userId", res.data.user._id); // 👈 FIXED
+
+      navigate("/");
+      window.location.reload();
     }
   } catch (err) {
     alert("Invalid Email or Password");
     console.log(err);
   }
 };
+
 
 
 
@@ -55,31 +56,25 @@ function Login() {
             <form onSubmit={handelSubmit}>
               <h4 className="text-center mb-4">Login</h4>
 
-             <input 
-				  className="form-control mb-3"
-				  placeholder="Email"
-				  required
-				  type="email"
-				  name="email"
-				  value={data.email}
-				  onChange={handelChange}
-				  autoComplete="username"
-				/>
+              <input
+                type="email"
+                name="email"
+                className="form-control mb-3"
+                placeholder="Email"
+                value={data.email}
+                onChange={handelChange}
+                required
+              />
 
-
-
-            <input 
-				  className="form-control mb-3"
-				  placeholder="Password"
-				  required
-				  type="password"
-				  name="password"
-				  value={data.password}
-				  onChange={handelChange}
-				  autoComplete="current-password"
-				/>
-
-
+              <input
+                type="password"
+                name="password"
+                className="form-control mb-3"
+                placeholder="Password"
+                value={data.password}
+                onChange={handelChange}
+                required
+              />
 
               <div className="d-flex justify-content-between mb-3">
                 <div className="form-check">
