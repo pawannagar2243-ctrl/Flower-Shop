@@ -8,14 +8,14 @@ function Signup() {
   const [data, setData] = useState({
     username: "",
     email: "",
-	Number:"",
     password: "",
-	Image:"",
+	image:"",
   });
 
   const handelChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
+
 
   const handleFileChange = (e) => {
     setImage(e.target.files[0]);
@@ -27,11 +27,10 @@ function Signup() {
     const formData = new FormData();
     formData.append("username", data.username);
     formData.append("email", data.email);
-    formData.append("Number", data.Number);
     formData.append("password", data.password);
     formData.append("image", image);
 
-    await axios.post("https://flower-shop-3b6m.onrender.com/signup",
+    await axios.post("http://localhost:5000/signup",
       formData, 
       {
         headers: {
@@ -41,8 +40,8 @@ function Signup() {
     );
 
     alert("User add ho gaya ");
-     
-    setData({ username: "", email: "",Number:"", password: "" });
+
+    setData({ username: "", email: "", password: "" });
     setImage(null);
   };
 
@@ -59,7 +58,6 @@ function Signup() {
             placeholder="Username"
             value={data.username}
             onChange={handelChange}
-			autoComplete="username"
             required
           />
 
@@ -70,19 +68,9 @@ function Signup() {
             placeholder="Email"
             value={data.email}
             onChange={handelChange}
-			autoComplete="username"
             required
           />
-		  
-		  <input 
-			className="form-control mb-3"
-			type="Number"
-			name="Number"
-			placeholder="mobile Number"
-			value={data.Number}
-			onChange={handelChange}
-			required
-			/>
+
           <input
             className="form-control mb-3"
             type="password"
@@ -90,13 +78,13 @@ function Signup() {
             placeholder="Password"
             value={data.password}
             onChange={handelChange}
-			autoComplete="new-password"
             required
           />
 
           <input
             className="form-control mb-2"
             type="file"
+			name="image"
             accept="image/*"
             onChange={handleFileChange}
             required
