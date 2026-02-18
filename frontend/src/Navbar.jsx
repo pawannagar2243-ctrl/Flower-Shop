@@ -259,7 +259,7 @@ function ShoppingCart() {
           {user && (
             <>
               <img
-                src={`https://flower-shop-3b6m.onrender.com/${user.image}`}
+                src={`https://flower-shop-3b6m.onrender.com/uploads/${user.image}`}
                 alt="user"
                 className="rounded-circle mb-3"
                 style={{ width: "120px", height: "120px", objectFit: "cover" }}
