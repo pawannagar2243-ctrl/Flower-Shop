@@ -9,23 +9,33 @@ const OrderSuccess = () => {
   }, []);
 
   const fetchOrders = async () => {
-    try {
-      const res = await axios.get("https://flower-shop-3b6m.onrender.com/admin/orders");
-      setOrders(Array.isArray(res.data) ? res.data : []);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-    }
-  };
+  try {
+    const token = localStorage.getItem("token");
 
-  // ✅ Cancel Order
-  const handleCancel = async (orderId) => {
+    const res = await axios.get(
+      "http://localhost:5000/my-orders",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setOrders(Array.isArray(res.data) ? res.data : []);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+  }
+};
+
+   const handleCancel = async (orderId) => {
     if (!window.confirm("Are you sure you want to cancel this order?"))
       return;
 
     try {
       await axios.put(
-        `https://flower-shop-3b6m.onrender.com/cancel-order/${orderId}`
+        `http://localhost:5000/cancel-order/${orderId}`
       );
+
       alert("Order Cancelled Successfully");
       fetchOrders();
     } catch (error) {
@@ -33,16 +43,16 @@ const OrderSuccess = () => {
     }
   };
 
-  // ✅ Return Product
+  // ✅ Return Function
   const handleReturn = async (orderId, productId) => {
     try {
-      await axios.post("https://flower-shop-3b6m.onrender.com/return-product", {
+      await axios.post("http://localhost:5000/return-product", {
         orderId,
         productId,
       });
 
       alert("Return request sent successfully!");
-      fetchOrders();
+      fetchOrders(); // refresh list
     } catch (error) {
       console.error("Return error:", error);
     }
@@ -68,12 +78,13 @@ const OrderSuccess = () => {
           <p>
             <strong>Status:</strong>{" "}
             <span
-              className={`badge
-                ${order.status === "Pending" && "bg-warning"}
-                ${order.status === "Shipped" && "bg-primary"}
-                ${order.status === "Delivered" && "bg-success"}
-                ${order.status === "Cancelled" && "bg-danger"}
-              `}
+              className={`badge ${
+                order.status === "Delivered"
+                  ? "bg-success"
+                  : order.status === "Shipped"
+                  ? "bg-primary"
+                  : "bg-warning"
+              }`}
             >
               {order.status || "Pending"}
             </span>
@@ -83,10 +94,10 @@ const OrderSuccess = () => {
 
           {order.products && order.products.length > 0 ? (
             order.products.map((p, index) => (
-              <div key={index} className="mb-3 pb-2">
+              <div key={index} className="mb-3 border-bottom pb-2">
                 <div className="d-flex align-items-center">
                   <img
-                    src={`https://flower-shop-3b6m.onrender.com/uploads/${p.Image}`}
+                    src={`http://localhost:5000/uploads/${p.Image}`}
                     width="60"
                     height="60"
                     style={{ objectFit: "cover" }}
@@ -96,15 +107,13 @@ const OrderSuccess = () => {
                   <div className="flex-grow-1 ms-3">
                     <div>{p.Name}</div>
                     <p className="mb-0">
-                      ₹{p.Price} × {p.qty}
+                     ₹{p.Price} × {p.qty}
                     </p>
-                    <p className="mb-0">
-                      Address: {order.address}
-                    </p>
+                    <p className="mb-0">Address: {order.address}</p>
                   </div>
 
                   <div>
-                    ₹{p.Price * p.qty}
+                    ₹{p.Price} 
                   </div>
                 </div>
 
@@ -117,9 +126,7 @@ const OrderSuccess = () => {
                   ) : order.status === "Delivered" ? (
                     <button
                       className="btn btn-sm btn-danger"
-                      onClick={() =>
-                        handleReturn(order._id, p._id)
-                      }
+                      onClick={() => handleReturn(order._id, p._id)}
                     >
                       Return Product
                     </button>
@@ -133,7 +140,6 @@ const OrderSuccess = () => {
 
           <hr />
 
-          {/* ✅ Buttons Section */}
           <div className="d-flex justify-content-end">
             {order.status !== "Delivered" &&
               order.status !== "Cancelled" && (
@@ -144,7 +150,6 @@ const OrderSuccess = () => {
                   Cancel Order
                 </button>
               )}
-
             <button className="btn btn-sm btn-warning me-2">
               Edit
             </button>
@@ -157,6 +162,6 @@ const OrderSuccess = () => {
       ))}
     </div>
   );
-};
+}
 
 export default OrderSuccess;
