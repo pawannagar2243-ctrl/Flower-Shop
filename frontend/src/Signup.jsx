@@ -13,17 +13,10 @@ function Signup() {
 	image:"",
   });
 
-  const handelChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
-
-  const handleFileChange = (e) => {
-    setImage(e.target.files[0]);
-  };
-
   const handelSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
+  try {
     const formData = new FormData();
     formData.append("username", data.username);
     formData.append("email", data.email);
@@ -31,27 +24,30 @@ function Signup() {
     formData.append("password", data.password);
     formData.append("image", image);
 
-    await axios.post("https://flower-shop-3b6m.onrender.com/signup",
-      formData, 
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+    await axios.post(
+      "https://flower-shop-3b6m.onrender.com/signup",
+      formData
     );
 
-    alert("User add ho gaya ");
-     
-    setData({ username: "", email: "",Number:"", password: "" });
-    setImage(null);
-  if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+    alert("User added successfully ");
 
-    } catch (error) {
-      alert(error.response?.data?.message || "Signup failed ❌");
+    setData({
+      username: "",
+      email: "",
+      Number: "",
+      password: "",
+    });
+
+    setImage(null);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
-  };
+
+  } catch (error) {
+    alert(error.response?.data?.message || "Signup failed ");
+  }
+};
 
 
   return (
