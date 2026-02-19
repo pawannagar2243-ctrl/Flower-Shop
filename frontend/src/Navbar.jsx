@@ -173,45 +173,48 @@ function ShoppingCart() {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg sticky-top bg-white px-4">
-        {/* LOGO */}
-        <Link to="/" className="navbar-brand fw-bold">
-          Flower Shop
-        </Link>
+    <nav className="navbar navbar-expand-lg bg-white sticky-top px-4">
 
-        {/* MOBILE BUTTON */}
-        <button
-          className="navbar-toggler"
-          data-bs-toggle="collapse"
-          data-bs-target="#navMenu"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+        {/* LEFT LOGO */}
+		  <Link to="/" className="navbar-brand fw-bold fs-3">
+			Flower Shop
+		  </Link>
 
-        {/* MENU LINKS */}
-        <div className="collapse navbar-collapse position-relative" id="navMenu">
-          <ul className="navbar-nav fw-bold position-absolute start-50 translate-middle-x gap-lg-4 text-center">
+		  {/* MOBILE TOGGLER */}
+		  <button
+			className="navbar-toggler"
+			type="button"
+			data-bs-toggle="collapse"
+			data-bs-target="#navMenu"
+		  >
+			<span className="navbar-toggler-icon"></span>
+		  </button>
 
-            <li className="nav-item">
-              <Link to="/" className="nav-link text-black custom-link-css">Home</Link>
-            </li>
+		  <div className="collapse navbar-collapse" id="navMenu">
 
-            <li className="nav-item">
-              <Link to="/About" className="nav-link text-black custom-link-css">About</Link>
-            </li>
+			{/* CENTER MENU */}
+			<ul className="navbar-nav ms-auto fw-bold gap-lg-5 text-center">
 
-            <li className="nav-item">
-              <Link to="/Shop" className="nav-link text-black custom-link-css">Shop</Link>
-            </li>
+			  <li className="nav-item">
+				<Link to="/" className="nav-link text-black">Home</Link>
+			  </li>
 
-            <li className="nav-item">
-              <Link to="/Contact" className="nav-link text-black custom-link-css">Contact</Link>
-            </li>
+			  <li className="nav-item">
+				<Link to="/About" className="nav-link text-black">About</Link>
+			  </li>
 
-          </ul>
+			  <li className="nav-item">
+				<Link to="/Shop" className="nav-link text-black">Shop</Link>
+			  </li>
 
-          {/* RIGHT SIDE ICONS */}
-          <div className="ms-auto d-flex align-items-center gap-3">
+			  <li className="nav-item">
+				<Link to="/Contact" className="nav-link text-black">Contact</Link>
+			  </li>
+
+			</ul>
+
+		  {/* RIGHT SIDE ICONS */}
+		  <div className="ms-lg-auto d-flex align-items-center gap-3 justify-content-center mt-3 mt-lg-0">
 
             {/* USER ICON */}
             <button
