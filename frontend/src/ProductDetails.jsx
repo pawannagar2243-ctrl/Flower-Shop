@@ -112,7 +112,7 @@ function ProductDetails() {
           <div className="border rounded-3 p-3 text-center ">
             <h6 className="fw-semibold mb-4">Guaranteed Safe Checkout</h6>
             <div className="d-flex justify-content-center flex-wrap gap-3">
-             <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" height="35" />
+             <img src="https://github.com/pawannagar2243-ctrl/Flower-Shop/blob/main/frontend/public/download%20(3).png?raw=true" height="35" />
               <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" height="35" />
               <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg" height="35" />
               <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Discover_Card_logo.svg" height="35"/>
