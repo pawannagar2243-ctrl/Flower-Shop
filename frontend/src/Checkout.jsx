@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Checkout() {
@@ -16,7 +17,17 @@ function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [validation, setValidation] = useState({});
 
+   const navigate = useNavigate();
+
   useEffect(() => {
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) {
+      alert("Please login first");
+      navigate("/login");
+      return;
+    }
+
     const cartData = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(cartData);
 
