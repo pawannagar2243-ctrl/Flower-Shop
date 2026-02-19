@@ -75,11 +75,14 @@ function Signup() {
 		  
 		  <input 
 			className="form-control mb-3"
-			type="Number"
+			type="tel"
 			name="Number"
+			pattern="[6-9]{1}[0-9]{9}"
+            title="Enter valid 10 digit number"
 			placeholder="mobile Number"
 			value={data.Number}
 			onChange={handelChange}
+			autoComplete="tel"
 			required
 			/>
           <input
