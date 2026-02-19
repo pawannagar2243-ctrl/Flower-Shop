@@ -5,6 +5,7 @@ import "./App.css";
 
 function Signup() {
   const [image, setImage] = useState(null);
+  const fileInputRef = useRef(null);
   const [data, setData] = useState({
     username: "",
     email: "",
