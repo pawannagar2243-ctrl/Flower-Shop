@@ -10,7 +10,7 @@ import Signup from "./Signup";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
 import OrderSuccess from "./OrderSuccess";
-
+import ProtectedRoute from "./ProtectedRoute";
 // ShoppingCart
 function ShoppingCart() {
   const navigate = useNavigate();
@@ -154,11 +154,12 @@ function ShoppingCart() {
   }, []);
 
   const logout = () => {
-    localStorage.removeItem("loginUser");
-    localStorage.removeItem("token");
-    setUser(null);
-    navigate("/");
-  };
+	 localStorage.removeItem("loginUser");
+	 localStorage.removeItem("token");
+	 localStorage.removeItem("userId");  // 👈 ye add karo
+	 setUser(null);
+	 navigate("/Login");
+	};
 
   const handleUserClick = () => {
     if (!user) {
@@ -300,7 +301,12 @@ function ShoppingCart() {
         <Route path="/Login" element={<Login />} />
         <Route path="/Signup" element={<Signup />} />
         <Route path="/Cart" element={<Cart />} />
-        <Route path="/Checkout" element={<Checkout />} />
+        <Route path="/Checkout" element={
+         <ProtectedRoute>
+          <Checkout />
+         </ProtectedRoute>
+         }
+         />
         <Route path="/OrderSuccess" element={<OrderSuccess />} />
       </Routes>
     </>
