@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"; 
 import { useState } from "react";
 import axios from "axios";
+import { useState, useRef } from "react";
 import "./App.css";
 
 function Signup() {
@@ -44,7 +45,15 @@ function Signup() {
      
     setData({ username: "", email: "",Number:"", password: "" });
     setImage(null);
+  if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+    } catch (error) {
+      alert(error.response?.data?.message || "Signup failed ❌");
+    }
   };
+
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
@@ -97,13 +106,15 @@ function Signup() {
           />
 
           <input
-            className="form-control mb-2"
-            type="file"
-            accept="image/*"
-			name="image"
-            onChange={handleFileChange}
-            required
-          />
+			  ref={fileInputRef}
+			  className="form-control mb-2"
+			  type="file"
+			  accept="image/*"
+			  name="image"
+			  onChange={handleFileChange}
+			  required
+			/>
+
 
           <button className="btn btn-primary w-100">Submit</button>
 
