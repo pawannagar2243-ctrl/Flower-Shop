@@ -10,7 +10,7 @@ function Signup() {
     email: "",
 	Number:"",
     password: "",
-	Image:"",
+	image:"",
   });
 
   const handelChange = (e) => {
@@ -97,6 +97,7 @@ function Signup() {
             className="form-control mb-2"
             type="file"
             accept="image/*"
+			name="image"
             onChange={handleFileChange}
             required
           />
