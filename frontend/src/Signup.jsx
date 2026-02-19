@@ -12,6 +12,13 @@ function Signup() {
     password: "",
 	image:"",
   });
+  const handelChange = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e) => {
+    setImage(e.target.files[0]);
+  };
 
   const handelSubmit = async (e) => {
   e.preventDefault();
