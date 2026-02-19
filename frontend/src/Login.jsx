@@ -63,6 +63,7 @@ function Login() {
                 placeholder="Email"
                 value={data.email}
                 onChange={handelChange}
+                autoComplete="username"
                 required
               />
 
@@ -73,6 +74,7 @@ function Login() {
                 placeholder="Password"
                 value={data.password}
                 onChange={handelChange}
+                autoComplete="current-password"
                 required
               />
 
