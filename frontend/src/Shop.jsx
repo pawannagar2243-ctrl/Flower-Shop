@@ -80,7 +80,7 @@ function Shop() {
                   }}><i className="bi bi-cart3" onClick={() => handleAddToCart(item)}></i></span>
 
                 <Link to={`/product/${item._id}`}className="nav-link p-0">
-                  <img src={`https://flower-shop-3b6m.onrender.com/uploads/${item.Image}`}
+                  <img src={`https://flower-shop-3b6m.onrender.com/uploads/${item.image}`}
                    className="card-img-top product-img"alt={item.Name}style={{height: "320px",objectFit: "cover",borderRadius: "12px",}}/></Link>
               </div>
 
