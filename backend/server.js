@@ -1,3 +1,5 @@
+require("dotenv").config();
+const nodemailer = require("nodemailer");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -5,9 +7,20 @@ const multer = require("multer");
 const path = require("path");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 
 const app = express();
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+);
+
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100
+}));
 app.use(
   cors({
     origin: "https://flower-shop-1-ji4c.onrender.com",
@@ -16,8 +29,6 @@ app.use(
   })
 );
 
-
-
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
@@ -25,8 +36,8 @@ app.use("/uploads", express.static("uploads"));
 
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.log("Mongo Error:", err));
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => console.log("❌ Mongo Error:", err));
 
 /* ================= MULTER ================= */
 
@@ -38,7 +49,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-const JWT_SECRET = "MY_SECRET_KEY_123";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 /* ================= PRODUCT ================= */
 
@@ -54,7 +65,7 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model("Product", productSchema);
 
-app.post("/productForm", upload.single("Image"), async (req, res) => {
+app.post("/productForm", upload.single("image"), async (req, res) => {
   try {
     const product = new Product({
       ...req.body,
@@ -300,6 +311,7 @@ app.get("/my-orders", verifyToken, async (req, res) => {
   res.json(orders);
 });
 
+
 app.put("/admin/order-status/:id", async (req, res) => {
   await Order.findByIdAndUpdate(req.params.id, { status: req.body.status });
   res.json({ success: true });
@@ -418,9 +430,104 @@ app.post("/Contact", async (req, res) => {
 app.get("/Contact", (req, res) => {
   res.send("Server running");
 });
+/* ================= FORGOT PASSWORD SYSTEM ================= */
 
-/* ================= SERVER ================= */
+const otpStore = {};
 
-app.listen(5000, () => {
-  console.log("Server running on http://localhost:5000");
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
 });
+
+/* SEND OTP */
+app.post("/send-otp", async (req, res) => {
+	console.log("Send OTP route hit");
+  const { email } = req.body;
+
+  try {
+    const user = await Signup.findOne({ email });
+    if (!user)
+      return res.status(404).json({ message: "User not found" });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    otpStore[email] = {
+      otp,
+      expires: Date.now() + 5 * 60 * 1000, // 5 min expiry
+    };
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Password Reset OTP",
+      text: `Your OTP is ${otp}. It expires in 5 minutes.`,
+    });
+
+    res.json({ success: true, message: "OTP sent successfully" });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error sending OTP" });
+  }
+});
+
+/* VERIFY OTP */
+app.post("/verify-otp", (req, res) => {
+  const { email, otp } = req.body;
+console.log("Received:", email, otp);        // ← add karo
+  console.log("Stored:", otpStore[email]);      // ← add karo
+  const stored = otpStore[email];
+
+  if (!stored)
+    return res.status(400).json({ message: "OTP not found" });
+
+  if (Date.now() > stored.expires)
+    return res.status(400).json({ message: "OTP expired" });
+
+  if (stored.otp !== otp)
+    return res.status(400).json({ message: "Invalid OTP" });
+
+  res.json({ success: true, message: "OTP verified" });
+});
+
+/* RESET PASSWORD */
+app.post("/reset-password", async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    const stored = otpStore[email];
+    if (!stored)
+      return res.status(400).json({ message: "OTP not verified" });
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await Signup.findOneAndUpdate(
+      { email },
+      { password: hashedPassword }
+    );
+
+    delete otpStore[email];
+
+    res.json({
+      success: true,
+      message: "Password updated successfully",
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/test", (req, res) => {
+  res.json({ message: "Backend working" });
+});
+/* ================= SERVER ================= */
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
