@@ -65,7 +65,7 @@ function Login() {
 	  
       setOtpSent(true);
     } catch (err) {
-       showToast(err.response?.data?.message || "Error sending OTP");
+       alert(err.response?.data?.message || "Error sending OTP");
     }
   };
 
@@ -80,7 +80,7 @@ function Login() {
 	  showToast("OTP Verified ✅", "success");
       setOtpVerified(true);
     } catch (err) {
-       showToast(err.response?.data?.message || "Invalid OTP");
+       alert(err.response?.data?.message || "Invalid OTP");
     }
   };
 
