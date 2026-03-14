@@ -450,11 +450,24 @@ app.get("/Contact", (req, res) => {
 const otpStore = {};
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+
+transporter.verify(function (error, success) {
+  if (error) {
+    console.log("❌ Email error:", error);
+  } else {
+    console.log("✅ Email server ready");
+  }
 });
 
 /* SEND OTP */
@@ -502,7 +515,7 @@ console.log("Received:", email, otp);        // ← add karo
   if (Date.now() > stored.expires)
     return res.status(400).json({ message: "OTP expired" });
 
-  if (stored.otp !== otp)
+  if (String(stored.otp) !== String(otp))
     return res.status(400).json({ message: "Invalid OTP" });
 
   res.json({ success: true, message: "OTP verified" });
