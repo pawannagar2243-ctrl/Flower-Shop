@@ -1,15 +1,34 @@
 import "./App.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams,Link } from "react-router-dom";
+import { useParams,Link,useNavigate } from "react-router-dom";
 
 function ProductDetails() {
+  const navigate = useNavigate();
   const [datafetch, setDatafetch] = useState([]);
   const { id } = useParams();    
   const [product, setProduct] = useState(null);
   const [qty, setQty] = useState(0);
   const [showReview, setShowReview] = useState(false);
   const [rating, setRating] = useState(0);
+  const [showSticky, setShowSticky] = useState(false);
+  
+  useEffect(() => {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      const isHidden = !entry.isIntersecting;
+      setShowSticky(isHidden);
+      // ← Footer ko batao
+	  window.dispatchEvent(new CustomEvent("stickyBar", { detail: isHidden }));
+    },
+    { threshold: 0 }
+  );
+
+  const target = document.getElementById("product-main-section");
+  if (target) observer.observe(target);
+
+  return () => observer.disconnect();
+}, [product]);
 
   useEffect(() => {
     axios.get(`https://flower-shop-3b6m.onrender.com/productForm/${id}`)
@@ -30,33 +49,41 @@ function ProductDetails() {
     fetchData();
   }, []);
   
-    const handleAddToCart = () => {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-	window.dispatchEvent(new Event("cartUpdated"));
+   const handleAddToCart = (item = null) => {  // ← item = null add karo
+  const selectedProduct = item || product;
+  const selectedQty = item ? 1 : qty;
 
+  if (selectedQty === 0) {
+    alert("Please select quantity first!");
+    return;
+  }
 
-    const existingProduct = cart.find(
-      (item) => item._id === product._id
-    );
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    if (existingProduct) {
-      existingProduct.qty += qty;
-    } else {
-      cart.push({
-        ...product,
-        qty: qty,
-      });
-    }
+  const existingProduct = cart.find((c) => c._id === selectedProduct._id);
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-    alert("Product added to cart 🛒");
-  };
+  if (existingProduct) {
+    existingProduct.qty += selectedQty;
+  } else {
+    cart.push({
+      _id: selectedProduct._id,
+      Name: selectedProduct.Name,
+      Price: selectedProduct.Price,
+      Image: selectedProduct.Image,
+      qty: selectedQty,
+    });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  window.dispatchEvent(new Event("cartUpdated"));
+  alert("Product added to cart 🛒");
+};
 
   if (!product) return <h3 className="text-center mt-5">Loading...</h3>;
 
   return (
     <>
-      <div className="container-fluid my-5">
+      <div className="container-fluid my-5" id="product-main-section"> 
         <div className="row g-2">
           <div className="col-lg-6 px-5">
             <span className="badge bg-light text-dark position-absolute m-3">
@@ -94,7 +121,8 @@ function ProductDetails() {
               >+</button>
             </div>
 
-            <button className="btn btn-danger px-4 text-white fw-semibold"  onClick={handleAddToCart}> ADD TO CART</button>
+            <button className="btn btn-danger px-4 text-white fw-semibold"   onClick={() => handleAddToCart()}> ADD TO CART</button>
+            <button className="btn btn-primary px-4 text-white fw-semibold" onClick={() => navigate("/Checkout")}> Buy Now</button>
           </div>
 
           <p className="mb-2">
@@ -112,7 +140,7 @@ function ProductDetails() {
           <div className="border rounded-3 p-3 text-center ">
             <h6 className="fw-semibold mb-4">Guaranteed Safe Checkout</h6>
             <div className="d-flex justify-content-center flex-wrap gap-3">
-             <img src="https://github.com/pawannagar2243-ctrl/Flower-Shop/blob/main/frontend/public/download%20(3).png?raw=true" height="45" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" height="35" />
               <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" height="35" />
               <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg" height="35" />
               <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Discover_Card_logo.svg" height="35"/>
@@ -229,6 +257,43 @@ function ProductDetails() {
           ))}
         </div>
       </div>
+	  
+<div className="position-fixed bottom-0 start-0 w-100 bg-white shadow-lg border-top py-3 px-4"
+	  style={{
+		zIndex: 1050,
+		transform: showSticky ? "translateY(0)" : "translateY(100%)",
+		transition: "transform 0.4s ease",  // ← smooth animation
+	  }}
+	>
+  <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
+
+    {/* Product Name */}
+    <div className="d-flex align-items-center gap-3">
+      <img
+        src={`https://flower-shop-3b6m.onrender.com/uploads/${product && product.Image}`}
+        alt={product && product.Name}
+        style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "8px" }}
+      />
+      <div>
+        <p className="mb-0 fw-bold">{product && product.Name}</p>
+        <p className="mb-0 text-danger fw-semibold">₹{product && product.Price}</p>
+      </div>
+    </div>
+
+    {/* Quantity */}
+    <div className="d-flex border align-items-center">
+      <button className="btn btn-outline-secondary btn-sm" onClick={() => qty > 1 && setQty(qty - 1)}>-</button>
+      <input type="text" className="form-control text-center border-0" style={{ width: "50px" }} value={qty} readOnly />
+      <button className="btn btn-outline-secondary btn-sm" onClick={() => setQty(qty + 1)}>+</button>
+    </div>
+
+    {/* Add to Cart */}
+    <button className="btn btn-danger px-4 fw-semibold" onClick={() => handleAddToCart()}>
+      ADD TO CART
+    </button>
+
+  </div>
+</div>
     </>
   );
 }
