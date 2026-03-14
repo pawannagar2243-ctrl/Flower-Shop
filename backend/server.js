@@ -11,20 +11,6 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
 const app = express();
-/* ================= CORS FIX ================= */
-
-app.use(cors({
-  origin: [
-    "https://flower-shop-1-ji4c.onrender.com",
-    "http://localhost",
-    "http://127.0.0.1"
-  ],
-  methods: ["GET","POST","PUT","DELETE"],
-  credentials: true
-}));
-
-app.options("/*", cors());
-
 app.use(
   helmet({
     crossOriginResourcePolicy: false,
@@ -35,6 +21,28 @@ app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100
 }));
+const allowedOrigins = [
+  "https://flower-shop-1-ji4c.onrender.com", // Aapki live site
+  "http://localhost",                         // Aapka local WordPress
+  "http://127.0.0.1"                          // Kabhi kabhi localhost ispe bhi chalta hai
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS from Rakesh Server"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+  })
+);
 
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
@@ -442,17 +450,11 @@ app.get("/Contact", (req, res) => {
 const otpStore = {};
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+    pass: process.env.EMAIL_PASS,
   },
-  tls: {
-    rejectUnauthorized: false
-  },
-  connectionTimeout: 20000
 });
 
 /* SEND OTP */
