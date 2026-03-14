@@ -21,9 +21,24 @@ app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100
 }));
+const allowedOrigins = [
+  "https://flower-shop-1-ji4c.onrender.com", // Aapki live site
+  "http://localhost",                         // Aapka local WordPress
+  "http://127.0.0.1"                          // Kabhi kabhi localhost ispe bhi chalta hai
+];
+
 app.use(
   cors({
-    origin: "https://flower-shop-1-ji4c.onrender.com",
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS from Rakesh Server"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
   })
