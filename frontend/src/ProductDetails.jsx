@@ -122,7 +122,14 @@ function ProductDetails() {
             </div>
 
             <button className="btn btn-danger px-4 text-white fw-semibold"   onClick={() => handleAddToCart()}> ADD TO CART</button>
-            <button className="btn btn-primary px-4 text-white fw-semibold" onClick={() => navigate("/Checkout")}> Buy Now</button>
+            <button className="btn btn-primary px-4 text-white fw-semibold" onClick={() =>
+			   navigate("/Checkout", {
+			    state: {
+			      product: product,
+			      qty: qty,
+			    },
+			  })
+}> Buy Now</button>
           </div>
 
           <p className="mb-2">
