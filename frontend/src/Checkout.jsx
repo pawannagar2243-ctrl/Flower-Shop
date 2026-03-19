@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import axios from "axios";
 
 function Checkout() {
   const [cart, setCart] = useState([]);
   const [total, setTotal] = useState(0);
-
+  const location = useLocation();
+  const buyNowProduct = location.state?.product;
+  const buyNowQty = location.state?.qty;
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -19,15 +21,31 @@ function Checkout() {
 
    const navigate = useNavigate();
 
-  useEffect(() => {
-    const userId = localStorage.getItem("userId");
+useEffect(() => {
+  const userId = localStorage.getItem("userId");
 
-    if (!userId) {
-      alert("Please login first");
-      navigate("/login");
-      return;
-    }
+  if (!userId) {
+    alert("Please login first");
+    navigate("/login");
+    return;
+  }
 
+  // ✅ BUY NOW FLOW
+  if (buyNowProduct) {
+    const singleProduct = [
+      {
+        _id: buyNowProduct._id,
+        Name: buyNowProduct.Name,
+        Price: buyNowProduct.Price,
+        Image: buyNowProduct.Image,
+        qty: buyNowQty || 1,
+      },
+    ];
+
+    setCart(singleProduct);
+    setTotal(buyNowProduct.Price * (buyNowQty || 1));
+  } else {
+    // ✅ NORMAL CART FLOW
     const cartData = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(cartData);
 
@@ -36,7 +54,8 @@ function Checkout() {
       sum += item.Price * item.qty;
     });
     setTotal(sum);
-  }, []);
+  }
+}, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -99,7 +118,7 @@ function Checkout() {
           pincode: "",
         });
         setPaymentMethod("");
-        setErrors({});
+       setValidation({});
       }
     } catch (err) {
      
