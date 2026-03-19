@@ -58,7 +58,9 @@ mongoose
 /* ================= MULTER ================= */
 
 const storage = multer.diskStorage({
-  destination: "uploads",
+ destination: (req, file, cb) => {
+  cb(null, "uploads/");
+},
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
   },
@@ -102,12 +104,26 @@ app.get("/productForm/:id", async (req, res) => {
   res.json(await Product.findById(req.params.id));
 });
 
-app.put("/productForm/:id", upload.single("Image"), async (req, res) => {
-  const updateData = { ...req.body };
-  if (req.file) updateData.Image = req.file.filename;
+app.put("/productForm/:id", upload.single("image"), async (req, res) => {
+  try {
+    const existing = await Product.findById(req.params.id);
 
-  const updated = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
-  res.json(updated);
+    const updateData = {
+      ...req.body,
+      Image: req.file ? req.file.filename : existing.Image
+    };
+
+    const updated = await Product.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    res.json(updated);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.delete("/productForm/:id", async (req, res) => {
