@@ -22,9 +22,10 @@ app.use(rateLimit({
   max: 100
 }));
 const allowedOrigins = [
-  "https://flower-shop-1-ji4c.onrender.com", // Aapki live site
-  "http://localhost",                         // Aapka local WordPress
-  "http://127.0.0.1"                          // Kabhi kabhi localhost ispe bhi chalta hai
+  "https://flower-shop-1-ji4c.onrender.com",
+  "https://addmin-penal.onrender.com", 
+  "http://localhost",
+  "http://127.0.0.1"
 ];
 
 app.use(
