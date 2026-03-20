@@ -258,7 +258,7 @@ function ProductDetails() {
                 <p className="my-0 text-muted">{item.Category}</p>
                 <p className="my-0 fw-semibold">{item.Name}</p>
                 <p className="my-0 text-muted">☆ ☆ ☆ ☆ ☆</p>
-                <p className="fw-bold text-muted "><span className="fw-bold text-decoration-line-through px-2">₹127.00</span>₹{item.Price}</p>
+                <p className="fw-bold text-muted "><span className="fw-bold text-decoration-line-through px-2"> ₹{item.discount}</span>₹{item.Price}</p>
               </div>
             </div>
           ))}
