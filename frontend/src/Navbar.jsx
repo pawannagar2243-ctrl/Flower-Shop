@@ -68,7 +68,7 @@ function ShoppingCart() {
         {cartItems.map((item) => (
           <div key={item._id} className="d-flex gap-2 mb-3">
             <img
-              src={`http://localhost:5000/uploads/${item.Image}`}
+              src={`https://flower-shop-3b6m.onrender.com/uploads/${item.Image}`}
               alt={item.Name}
               className="img-fluid rounded"
               style={{ maxWidth: "60px" }}
@@ -228,7 +228,7 @@ function Navbar() {
                 {/* User Icon */}
                 <button className="btn p-0 border-0 bg-transparent" onClick={handleUserClick}>
                   {user ? (
-                    <img src={`http://localhost:5000/uploads/${user.image}`} alt="profile" className="rounded-circle" style={{ width: "35px", height: "35px", objectFit: "cover" }} />
+                    <img src={`https://flower-shop-3b6m.onrender.com/uploads/${user.image}`} alt="profile" className="rounded-circle" style={{ width: "35px", height: "35px", objectFit: "cover" }} />
                   ) : (
                     <i className="fas fa-user-circle fs-3"></i>
                   )}
@@ -315,7 +315,7 @@ function Navbar() {
         <div className="offcanvas-body text-center">
           {user ? (
             <>
-              <img src={`http://localhost:5000/uploads/${user.image}`} alt="user" className="rounded-circle mb-3" style={{ width: "120px", height: "120px", objectFit: "cover" }} />
+              <img src={`https://flower-shop-3b6m.onrender.com/uploads/${user.image}`} alt="user" className="rounded-circle mb-3" style={{ width: "120px", height: "120px", objectFit: "cover" }} />
               <h5>{user.username}</h5>
               <p className="text-muted">{user.email}</p>
               <p className="text-muted">{user.Number}</p>
