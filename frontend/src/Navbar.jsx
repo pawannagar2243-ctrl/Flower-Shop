@@ -238,7 +238,7 @@ function Navbar() {
                 <button className="btn position-relative" onClick={handleCartClick}>
                   <i className="bi bi-cart3 fs-4"></i>
                   {cartCount > 0 && (
-                    <span className="position-absolute translate-middle badge rounded-pill bg-danger" style={{ fontSize: "10px", top: "5px", right: "-5px" }}>
+                    <span className="position-absolute translate-middle badge rounded-pill bg-danger" style={{ fontSize: "10px", top: "12px", right: "-5px" }}>
                       {cartCount}
                     </span>
                   )}
